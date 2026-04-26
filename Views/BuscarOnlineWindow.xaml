@@ -1,0 +1,152 @@
+<Window x:Class="ReaperPluginManager.Views.BuscarOnlineWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Buscar Plugins Online"
+        Height="620" Width="860"
+        MinHeight="500" MinWidth="700"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        Background="#1A1A1A"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontFamily="{DynamicResource MaterialDesignFont}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="36"/>   <!-- Título -->
+            <RowDefinition Height="Auto"/> <!-- Barra búsqueda -->
+            <RowDefinition Height="Auto"/> <!-- Filtros / sitios -->
+            <RowDefinition Height="*"/>    <!-- Resultados -->
+            <RowDefinition Height="Auto"/> <!-- Status -->
+        </Grid.RowDefinitions>
+
+        <!-- Barra de título -->
+        <Border Grid.Row="0" Background="#111111"
+                MouseLeftButtonDown="TitleBar_MouseDown">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0">
+                    <materialDesign:PackIcon Kind="Magnify" Width="15" Height="15"
+                                            Foreground="#AAAAAA" Margin="0,0,8,0"/>
+                    <TextBlock Text="Buscar Plugins Online" FontSize="12"
+                               Foreground="#CCCCCC" VerticalAlignment="Center"/>
+                </StackPanel>
+                <Button Grid.Column="1" Click="BtnCerrar_Click"
+                        Width="46" Height="36" BorderThickness="0" Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#C42B1C"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                    <TextBlock Text="&#x2715;" FontSize="14" Foreground="#CCCCCC"
+                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Barra de búsqueda -->
+        <Border Grid.Row="1" Background="#1C1C1C"
+                BorderThickness="0,0,0,1" BorderBrush="#333333" Padding="16,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="TxtBuscar"
+                         materialDesign:HintAssist.Hint="Nombre del plugin (ej: Serum, Kontakt, Vital...)"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         Foreground="White" CaretBrush="White"
+                         FontSize="14"
+                         KeyDown="TxtBuscar_KeyDown"/>
+                <Button Grid.Column="1" Click="BtnBuscar_Click"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Margin="12,0,0,0" Height="40" Padding="16,0">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Magnify" Margin="0,0,6,0"/>
+                        <TextBlock Text="Buscar" FontSize="13"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Filtros de sitios -->
+        <Border Grid.Row="2" Background="#222222"
+                BorderThickness="0,0,0,1" BorderBrush="#2A2A2A" Padding="16,8">
+            <WrapPanel Orientation="Horizontal">
+                <TextBlock Text="Buscar en:" Foreground="#78909C"
+                           VerticalAlignment="Center" Margin="0,0,12,0" FontSize="12"/>
+                <CheckBox x:Name="ChkKVR" Content="KVR Audio" IsChecked="True"
+                          Foreground="#CCCCCC" Margin="0,0,16,0"/>
+                <CheckBox x:Name="ChkVST4Free" Content="VST4Free" IsChecked="True"
+                          Foreground="#CCCCCC" Margin="0,0,16,0"/>
+                <CheckBox x:Name="ChkBPB" Content="Bedroom Producers Blog" IsChecked="True"
+                          Foreground="#CCCCCC" Margin="0,0,16,0"/>
+                <CheckBox x:Name="ChkPluginBoutique" Content="Plugin Boutique" IsChecked="True"
+                          Foreground="#CCCCCC" Margin="0,0,16,0"/>
+                <CheckBox x:Name="ChkGearspace" Content="Gearspace" IsChecked="False"
+                          Foreground="#CCCCCC" Margin="0,0,16,0"/>
+            </WrapPanel>
+        </Border>
+
+        <!-- Resultados -->
+        <Grid Grid.Row="3">
+            <!-- Estado inicial -->
+            <StackPanel x:Name="PanelInicio"
+                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                <materialDesign:PackIcon Kind="Web" Width="56" Height="56"
+                                         Foreground="#333333" HorizontalAlignment="Center"/>
+                <TextBlock Text="Escribe el nombre de un plugin y presiona Buscar"
+                           Foreground="#555555" Margin="0,16,0,0" FontSize="13"
+                           HorizontalAlignment="Center"/>
+                <TextBlock Text="Se abrirán los resultados de los sitios seleccionados"
+                           Foreground="#444444" Margin="0,4,0,0" FontSize="11"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Lista de resultados con links -->
+            <ScrollViewer x:Name="ScrollResultados"
+                          Visibility="Collapsed"
+                          VerticalScrollBarVisibility="Auto"
+                          Padding="16">
+                <StackPanel x:Name="PanelResultados" Margin="0,8"/>
+            </ScrollViewer>
+
+            <!-- Cargando -->
+            <StackPanel x:Name="PanelCargando"
+                        Visibility="Collapsed"
+                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                             Width="40" Height="40" IsIndeterminate="True"/>
+                <TextBlock Text="Generando links de búsqueda..."
+                           Foreground="#78909C" Margin="0,12,0,0"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Status bar -->
+        <Border Grid.Row="4" Background="#111111"
+                BorderThickness="0,1,0,0" BorderBrush="#2A2A2A" Padding="16,6">
+            <TextBlock x:Name="TxtStatus"
+                       Text="Listo para buscar"
+                       Foreground="#555555" FontSize="11"/>
+        </Border>
+    </Grid>
+</Window>

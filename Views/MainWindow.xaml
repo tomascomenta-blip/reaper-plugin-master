@@ -8,16 +8,15 @@
         xmlns:converters="clr-namespace:ReaperPluginManager.Converters"
         mc:Ignorable="d"
         Title="REAPER Plugin Manager"
-        Height="800" Width="1280"
-        MinHeight="600" MinWidth="1000"
+        Height="650" Width="1000"
+        MinHeight="500" MinWidth="800"
         WindowStartupLocation="CenterScreen"
-        WindowStyle="None"
-        AllowsTransparency="True"
+        WindowStyle="SingleBorderWindow"
+        AllowsTransparency="False"
         ResizeMode="CanResize"
         Background="{StaticResource BackgroundDark}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        TextElement.FontFamily="{DynamicResource MaterialDesignFont}"
-        Style="{StaticResource MaterialDesignWindow}">
+        TextElement.FontFamily="{DynamicResource MaterialDesignFont}">
 
     <Window.Resources>
         <converters:StatusToColorConverter    x:Key="StatusToColor"/>
@@ -37,7 +36,7 @@
         </Grid.RowDefinitions>
 
         <!-- ══════════════════════════════════════════ BARRA DE TÍTULO ══ -->
-        <Border Grid.Row="0" Background="#111111"
+        <Border Grid.Row="0" Background="#1A1A1A"
                 MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -50,9 +49,9 @@
                 <StackPanel Grid.Column="0" Orientation="Horizontal"
                             VerticalAlignment="Center" Margin="12,0,0,0">
                     <materialDesign:PackIcon Kind="MusicBox" Width="16" Height="16"
-                                            Foreground="#78909C" Margin="0,0,8,0"/>
+                                            Foreground="#AAAAAA" Margin="0,0,8,0"/>
                     <TextBlock Text="REAPER Plugin Manager"
-                               FontSize="12" Foreground="#90A4AE"
+                               FontSize="12" Foreground="#CCCCCC"
                                VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -62,46 +61,89 @@
                     <Button x:Name="BtnMinimize"
                             Click="BtnMinimize_Click"
                             Width="46" Height="36"
-                            Background="Transparent"
                             BorderThickness="0"
-                            Style="{StaticResource MaterialDesignFlatButton}"
-                            Foreground="#90A4AE"
-                            Padding="0"
+                            Cursor="Hand"
                             ToolTip="Minimizar">
-                        <materialDesign:PackIcon Kind="WindowMinimize" Width="14" Height="14"/>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="#CCCCCC"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#333333"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                        <TextBlock Text="&#x2212;" FontSize="16" Foreground="#CCCCCC"
+                                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
                     <!-- Maximizar/Restaurar -->
                     <Button x:Name="BtnMaximize"
                             Click="BtnMaximize_Click"
                             Width="46" Height="36"
-                            Background="Transparent"
                             BorderThickness="0"
-                            Style="{StaticResource MaterialDesignFlatButton}"
-                            Foreground="#90A4AE"
-                            Padding="0"
+                            Cursor="Hand"
                             ToolTip="Maximizar">
-                        <materialDesign:PackIcon Kind="WindowMaximize" Width="14" Height="14"/>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#333333"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                        <TextBlock Text="&#x25A1;" FontSize="13" Foreground="#CCCCCC"
+                                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
                     <!-- Cerrar -->
                     <Button x:Name="BtnClose"
                             Click="BtnClose_Click"
                             Width="46" Height="36"
-                            Background="Transparent"
                             BorderThickness="0"
-                            Foreground="#90A4AE"
-                            Padding="0"
+                            Cursor="Hand"
                             ToolTip="Cerrar">
                         <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#C42B1C"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                    </Trigger>
-                                </Style.Triggers>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#C42B1C"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </Button.Style>
-                        <materialDesign:PackIcon Kind="WindowClose" Width="14" Height="14"/>
+                        <TextBlock Text="&#x2715;" FontSize="14" Foreground="#CCCCCC"
+                                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
                 </StackPanel>
             </Grid>
@@ -144,6 +186,17 @@
 
                 <!-- Acciones del header -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Click="BtnBuscarOnline_Click"
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                            Foreground="#90A4AE"
+                            BorderBrush="#555555"
+                            Margin="0,0,8,0"
+                            ToolTip="Buscar plugins en internet">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Magnify" Margin="0,0,4,0"/>
+                            <TextBlock Text="Buscar online"/>
+                        </StackPanel>
+                    </Button>
                     <Button Command="{Binding OpenAddPluginCommand}"
                             Style="{StaticResource MaterialDesignRaisedButton}"
                             Margin="0,0,8,0">
@@ -431,8 +484,9 @@
                                         </Button>
 
                                         <!-- Menú contextual -->
-                                        <Button Style="{StaticResource MaterialDesignIconButton}"
-                                                Height="32" Width="32">
+                                        <Button Height="32" Width="32"
+                                                Style="{StaticResource MaterialDesignIconButton}"
+                                                Click="DotsMenu_Click">
                                             <materialDesign:PackIcon Kind="DotsVertical" Width="16" Height="16"/>
                                             <Button.ContextMenu>
                                                 <ContextMenu>
