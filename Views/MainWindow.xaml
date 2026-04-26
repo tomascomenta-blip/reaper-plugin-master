@@ -159,12 +159,40 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Logo y título -->
+                <!-- Logo y título + navegación principal -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <StackPanel>
+                    <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="Gestor de Plugins VST"
                                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
                                    Foreground="#78909C"/>
+                    </StackPanel>
+                    <!-- Tabs de navegación -->
+                    <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Center">
+                        <Button x:Name="TabBtnPlugins"
+                                Click="TabBtnPlugins_Click"
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                Foreground="White"
+                                BorderThickness="0,0,0,2"
+                                BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+                                Padding="12,6">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="MusicBox" Width="16" Height="16" Margin="0,0,6,0"/>
+                                <TextBlock Text="Mis Plugins" FontSize="13"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="TabBtnAyuda"
+                                Click="TabBtnAyuda_Click"
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                Foreground="#78909C"
+                                BorderThickness="0,0,0,2"
+                                BorderBrush="Transparent"
+                                Padding="12,6"
+                                Margin="4,0,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="HelpCircleOutline" Width="16" Height="16" Margin="0,0,6,0"/>
+                                <TextBlock Text="Ayuda" FontSize="13"/>
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                 </StackPanel>
 
@@ -217,6 +245,9 @@
 
         <!-- ═══════════════════════════════════════════ CONTENIDO PRINCIPAL ══ -->
         <Grid Grid.Row="2">
+            <!-- Panel de Plugins (visible por defecto) -->
+            <Grid x:Name="PanelPlugins" Visibility="Visible">
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="220" MinWidth="180" MaxWidth="300"/>
                 <ColumnDefinition Width="*"/>
@@ -732,6 +763,552 @@
                     </ScrollViewer>
                 </Grid>
             </Border>
+            </Grid>
+            <!-- FIN Panel Plugins -->
+
+            <!-- ═══════════════════════════════════════ PANEL AYUDA ══ -->
+            <Grid x:Name="PanelAyuda" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Sidebar de ayuda -->
+                <Border Grid.Column="0" Background="{StaticResource SurfaceDark}"
+                        BorderThickness="0,0,1,0" BorderBrush="#2A2A3E">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top"
+                                   Text="GUÍA DE USO"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                   Foreground="#78909C" Margin="12,12,8,4"/>
+                        <StackPanel DockPanel.Dock="Top">
+                            <Button x:Name="HelpNav0" Click="HelpNav_Click" Tag="0"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                                    Padding="12,8" Foreground="White"
+                                    BorderThickness="3,0,0,0"
+                                    BorderBrush="{DynamicResource PrimaryHueMidBrush}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="InformationOutline" Width="16" Height="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="¿Qué es esto?" FontSize="12"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="HelpNav1" Click="HelpNav_Click" Tag="1"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                                    Padding="12,8" Foreground="#78909C"
+                                    BorderThickness="3,0,0,0" BorderBrush="Transparent">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="CheckboxMarkedCircleOutline" Width="16" Height="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Requisitos" FontSize="12"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="HelpNav2" Click="HelpNav_Click" Tag="2"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                                    Padding="12,8" Foreground="#78909C"
+                                    BorderThickness="3,0,0,0" BorderBrush="Transparent">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Hammer" Width="16" Height="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Compilar el programa" FontSize="12"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="HelpNav3" Click="HelpNav_Click" Tag="3"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                                    Padding="12,8" Foreground="#78909C"
+                                    BorderThickness="3,0,0,0" BorderBrush="Transparent">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Plus" Width="16" Height="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Agregar plugins" FontSize="12"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="HelpNav4" Click="HelpNav_Click" Tag="4"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                                    Padding="12,8" Foreground="#78909C"
+                                    BorderThickness="3,0,0,0" BorderBrush="Transparent">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Music" Width="16" Height="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Instalar en REAPER" FontSize="12"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="HelpNav5" Click="HelpNav_Click" Tag="5"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                                    Padding="12,8" Foreground="#78909C"
+                                    BorderThickness="3,0,0,0" BorderBrush="Transparent">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="ShieldCheckOutline" Width="16" Height="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Escaneo de seguridad" FontSize="12"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="HelpNav6" Click="HelpNav_Click" Tag="6"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                                    Padding="12,8" Foreground="#78909C"
+                                    BorderThickness="3,0,0,0" BorderBrush="Transparent">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="FrequentlyAskedQuestions" Width="16" Height="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Preguntas frecuentes" FontSize="12"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- Contenido de la sección de ayuda -->
+                <Border Grid.Column="1" Background="{StaticResource BackgroundDark}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <Grid Margin="32,28,32,32">
+
+                            <!-- SECCIÓN 0: ¿Qué es esto? -->
+                            <StackPanel x:Name="HelpSec0" Visibility="Visible">
+                                <TextBlock Text="¿Qué es REAPER Plugin Manager?"
+                                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                           Foreground="White" Margin="0,0,0,6"/>
+                                <TextBlock Text="Gestor visual de plugins VST, VST3 y JSFX para REAPER"
+                                           Foreground="#78909C" FontSize="13" Margin="0,0,0,20"/>
+                                <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap"
+                                           Margin="0,0,0,20" LineHeight="22">
+                                    Esta aplicación te permite gestionar, instalar, escanear y organizar todos tus
+                                    plugins de audio desde una sola ventana, sin mover archivos manualmente ni
+                                    configurar REAPER plugin a plugin.
+                                </TextBlock>
+                                <UniformGrid Rows="2" Columns="2" Margin="0,0,0,20">
+                                    <materialDesign:Card Margin="0,0,8,8" Background="{StaticResource CardDark}" Padding="16">
+                                        <StackPanel>
+                                            <TextBlock Text="📦" FontSize="24" Margin="0,0,0,8"/>
+                                            <TextBlock Text="Catálogo centralizado" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Todos tus plugins en una base de datos local con historial y metadatos." FontSize="12" Foreground="#78909C" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+                                    <materialDesign:Card Margin="0,0,0,8" Background="{StaticResource CardDark}" Padding="16">
+                                        <StackPanel>
+                                            <TextBlock Text="🛡️" FontSize="24" Margin="0,0,0,8"/>
+                                            <TextBlock Text="Análisis de seguridad" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Escaneo con Windows Defender y verificación de firma digital." FontSize="12" Foreground="#78909C" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+                                    <materialDesign:Card Margin="0,0,8,0" Background="{StaticResource CardDark}" Padding="16">
+                                        <StackPanel>
+                                            <TextBlock Text="🚀" FontSize="24" Margin="0,0,0,8"/>
+                                            <TextBlock Text="Instalación automática" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Copia los .dll o .vst3 al directorio correcto de REAPER con un clic." FontSize="12" Foreground="#78909C" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+                                    <materialDesign:Card Margin="0,0,0,0" Background="{StaticResource CardDark}" Padding="16">
+                                        <StackPanel>
+                                            <TextBlock Text="🎵" FontSize="24" Margin="0,0,0,8"/>
+                                            <TextBlock Text="Integración con REAPER" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Detecta y usa la ruta de plugins de REAPER automáticamente." FontSize="12" Foreground="#78909C" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+                                </UniformGrid>
+                                <materialDesign:Card Background="#1B3A2A" Padding="14" Margin="0,0,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="CheckCircle" Foreground="{StaticResource SafeGreen}"
+                                                                 Width="20" Height="20" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap" VerticalAlignment="Center">
+                                            <Run FontWeight="Bold" Text="Compatible con:" Foreground="White"/>
+                                            <Run Text=" VST2 (.dll), VST3 (.vst3) y JSFX (.jsfx). Solo Windows 10/11 x64."/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </materialDesign:Card>
+                            </StackPanel>
+
+                            <!-- SECCIÓN 1: Requisitos -->
+                            <StackPanel x:Name="HelpSec1" Visibility="Collapsed">
+                                <TextBlock Text="Requisitos del sistema"
+                                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                           Foreground="White" Margin="0,0,0,6"/>
+                                <TextBlock Text="Todo lo que necesitas antes de usar el programa"
+                                           Foreground="#78909C" FontSize="13" Margin="0,0,0,20"/>
+                                <!-- Fila 1 -->
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text=".NET SDK 8.0+" FontWeight="Bold" Foreground="White"/>
+                                            <TextBlock Text="Necesario para compilar y publicar el ejecutable." FontSize="12" Foreground="#78909C"/>
+                                            <TextBlock Text="→ dot.net/download" FontSize="11" Foreground="{DynamicResource PrimaryHueLightBrush}" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="1" Background="#1B3A2A" CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
+                                            <TextBlock Text="REQUERIDO" FontSize="10" Foreground="{StaticResource SafeGreen}" FontWeight="Bold"/>
+                                        </Border>
+                                    </Grid>
+                                </materialDesign:Card>
+                                <!-- Fila 2 -->
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="Windows 10 / 11 x64" FontWeight="Bold" Foreground="White"/>
+                                            <TextBlock Text="La app usa WPF, WinVerifyTrust y Windows Defender." FontSize="12" Foreground="#78909C"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="1" Background="#1B3A2A" CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
+                                            <TextBlock Text="REQUERIDO" FontSize="10" Foreground="{StaticResource SafeGreen}" FontWeight="Bold"/>
+                                        </Border>
+                                    </Grid>
+                                </materialDesign:Card>
+                                <!-- Fila 3 -->
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="REAPER (cualquier versión reciente)" FontWeight="Bold" Foreground="White"/>
+                                            <TextBlock Text="El DAW donde se instalarán tus plugins." FontSize="12" Foreground="#78909C"/>
+                                            <TextBlock Text="→ reaper.fm" FontSize="11" Foreground="{DynamicResource PrimaryHueLightBrush}" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="1" Background="#1B3A2A" CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
+                                            <TextBlock Text="REQUERIDO" FontSize="10" Foreground="{StaticResource SafeGreen}" FontWeight="Bold"/>
+                                        </Border>
+                                    </Grid>
+                                </materialDesign:Card>
+                                <!-- Fila 4 -->
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="Visual Studio 2022 Community" FontWeight="Bold" Foreground="White"/>
+                                            <TextBlock Text="Solo si quieres editar el código fuente." FontSize="12" Foreground="#78909C"/>
+                                            <TextBlock Text="→ visualstudio.microsoft.com" FontSize="11" Foreground="{DynamicResource PrimaryHueLightBrush}" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="1" Background="#2A2A3E" CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
+                                            <TextBlock Text="OPCIONAL" FontSize="10" Foreground="#90A4AE" FontWeight="Bold"/>
+                                        </Border>
+                                    </Grid>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="#1A1A2E" Padding="14">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="AlertCircleOutline" Foreground="{StaticResource SuspiciousAmber}"
+                                                                 Width="20" Height="20" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap" VerticalAlignment="Center">
+                                            <Run FontWeight="Bold" Text="Solo Windows:" Foreground="White"/>
+                                            <Run Text=" La app no funciona en macOS ni Linux."/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </materialDesign:Card>
+                            </StackPanel>
+
+                            <!-- SECCIÓN 2: Compilar -->
+                            <StackPanel x:Name="HelpSec2" Visibility="Collapsed">
+                                <TextBlock Text="Compilar y ejecutar el programa"
+                                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                           Foreground="White" Margin="0,0,0,6"/>
+                                <TextBlock Text="Genera el .exe desde el código fuente con estos pasos"
+                                           Foreground="#78909C" FontSize="13" Margin="0,0,0,20"/>
+                                <!-- Paso 1 -->
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                        <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,16,0">
+                                            <TextBlock Text="1" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Clonar el repositorio" FontWeight="Bold" Foreground="White" Margin="0,0,0,6"/>
+                                            <Border Background="#0A0A12" CornerRadius="4" Padding="12,10">
+                                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#90CBF9" TextWrapping="Wrap">
+                                                    git clone https://github.com/tomascomenta-blip/reaper-plugin-master.git&#xA;cd reaper-plugin-master
+                                                </TextBlock>
+                                            </Border>
+                                        </StackPanel>
+                                    </Grid>
+                                </materialDesign:Card>
+                                <!-- Paso 2 -->
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                        <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,16,0">
+                                            <TextBlock Text="2" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Restaurar dependencias NuGet" FontWeight="Bold" Foreground="White" Margin="0,0,0,6"/>
+                                            <Border Background="#0A0A12" CornerRadius="4" Padding="12,10">
+                                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#90CBF9">dotnet restore ReaperPluginManager.csproj</TextBlock>
+                                            </Border>
+                                        </StackPanel>
+                                    </Grid>
+                                </materialDesign:Card>
+                                <!-- Paso 3 -->
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                        <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,16,0">
+                                            <TextBlock Text="3" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Publicar como .exe portable (un solo archivo)" FontWeight="Bold" Foreground="White" Margin="0,0,0,6"/>
+                                            <Border Background="#0A0A12" CornerRadius="4" Padding="12,10">
+                                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#90CBF9" TextWrapping="Wrap">dotnet publish ReaperPluginManager.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true -o ./publish</TextBlock>
+                                            </Border>
+                                            <TextBlock Text="El ejecutable final estará en: ./publish/ReaperPluginManager.exe" FontSize="12" Foreground="#78909C" Margin="0,8,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </materialDesign:Card>
+                                <!-- Paso 4 -->
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                        <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,16,0">
+                                            <TextBlock Text="4" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Compilar el VSTHost (sandbox, opcional)" FontWeight="Bold" Foreground="White" Margin="0,0,0,6"/>
+                                            <Border Background="#0A0A12" CornerRadius="4" Padding="12,10">
+                                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#90CBF9" TextWrapping="Wrap">cd VSTHost/PluginTestHost&#xA;dotnet publish PluginTestHost.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true -o ../../publish/VSTHost/</TextBlock>
+                                            </Border>
+                                        </StackPanel>
+                                    </Grid>
+                                </materialDesign:Card>
+                            </StackPanel>
+
+                            <!-- SECCIÓN 3: Agregar plugins -->
+                            <StackPanel x:Name="HelpSec3" Visibility="Collapsed">
+                                <TextBlock Text="Agregar plugins al gestor"
+                                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                           Foreground="White" Margin="0,0,0,6"/>
+                                <TextBlock Text="Cómo registrar tus archivos VST en la base de datos"
+                                           Foreground="#78909C" FontSize="13" Margin="0,0,0,20"/>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,16,0" VerticalAlignment="Top">
+                                        <TextBlock Text="1" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/></Border>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Abrir el programa" FontWeight="Bold" Foreground="White" Margin="0,0,0,4"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">Ejecuta ReaperPluginManager.exe. Si Windows muestra SmartScreen, haz clic en "Más información" → "Ejecutar de todas formas".</TextBlock>
+                                    </StackPanel></Grid>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,16,0" VerticalAlignment="Top">
+                                        <TextBlock Text="2" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/></Border>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text='Clic en "Agregar Plugin" (botón + en el header)' FontWeight="Bold" Foreground="White" Margin="0,0,0,4"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">El botón está en la barra superior de la ventana junto a la búsqueda.</TextBlock>
+                                    </StackPanel></Grid>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,16,0" VerticalAlignment="Top">
+                                        <TextBlock Text="3" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/></Border>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Seleccionar el archivo del plugin" FontWeight="Bold" Foreground="White" Margin="0,0,0,4"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">Navega hasta el .dll (VST2), .vst3 (VST3) o .jsfx y selecciónalo en el explorador.</TextBlock>
+                                    </StackPanel></Grid>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,16,0" VerticalAlignment="Top">
+                                        <TextBlock Text="4" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/></Border>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Escaneo automático de seguridad" FontWeight="Bold" Foreground="White" Margin="0,0,0,4"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">El programa escaneará el archivo con Windows Defender y verificará su firma digital. Verás el resultado en el panel derecho de detalle.</TextBlock>
+                                    </StackPanel></Grid>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,0">
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,16,0" VerticalAlignment="Top">
+                                        <TextBlock Text="5" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/></Border>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Plugin registrado en la base de datos" FontWeight="Bold" Foreground="White" Margin="0,0,0,4"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">El plugin aparece en la lista con nombre, tipo, tamaño y estado de seguridad. Se guarda en %LOCALAPPDATA%\ReaperPluginManager\plugins.db</TextBlock>
+                                    </StackPanel></Grid>
+                                </materialDesign:Card>
+                            </StackPanel>
+
+                            <!-- SECCIÓN 4: Instalar en REAPER -->
+                            <StackPanel x:Name="HelpSec4" Visibility="Collapsed">
+                                <TextBlock Text="Instalar plugins en REAPER"
+                                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                           Foreground="White" Margin="0,0,0,6"/>
+                                <TextBlock Text="Cómo copiar el plugin al directorio correcto y que REAPER lo detecte"
+                                           Foreground="#78909C" FontSize="13" Margin="0,0,0,20"/>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,16,0" VerticalAlignment="Top">
+                                        <TextBlock Text="1" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/></Border>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Seleccionar el plugin en la lista central" FontWeight="Bold" Foreground="White" Margin="0,0,0,4"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">Haz clic sobre el plugin que quieres instalar. Se abrirá el panel de detalle a la derecha.</TextBlock>
+                                    </StackPanel></Grid>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,16,0" VerticalAlignment="Top">
+                                        <TextBlock Text="2" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/></Border>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text='Clic en "Instalar"' FontWeight="Bold" Foreground="White" Margin="0,0,0,4"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap" Margin="0,0,0,8">El programa copia el .dll/.vst3 al directorio de plugins de REAPER automáticamente. Las rutas destino dependen de los permisos:</TextBlock>
+                                        <Border Background="#0A0A12" CornerRadius="4" Padding="12,10">
+                                            <StackPanel>
+                                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#90CBF9" Margin="0,0,0,4">Sin admin → %APPDATA%\REAPER\Plugins</TextBlock>
+                                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#CE93D8" Margin="0,0,0,4">Con admin → C:\Program Files\VSTPlugins</TextBlock>
+                                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#CE93D8">Con admin (VST3) → C:\Program Files\Common Files\VST3</TextBlock>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel></Grid>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,16,0" VerticalAlignment="Top">
+                                        <TextBlock Text="3" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/></Border>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Configurar la ruta de plugins en REAPER" FontWeight="Bold" Foreground="White" Margin="0,0,0,4"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">Si usas un directorio personalizado, en REAPER ve a:</TextBlock>
+                                        <Border Background="#0A0A12" CornerRadius="4" Padding="12,10" Margin="0,8,0,0">
+                                            <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#90CBF9">Opciones → Preferencias → VST → (agregar ruta)</TextBlock>
+                                        </Border>
+                                    </StackPanel></Grid>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,16,0" VerticalAlignment="Top">
+                                        <TextBlock Text="4" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/></Border>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Reescanear plugins en REAPER" FontWeight="Bold" Foreground="White" Margin="0,0,0,4"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">Abre REAPER y haz clic en:</TextBlock>
+                                        <Border Background="#0A0A12" CornerRadius="4" Padding="12,10" Margin="0,8,0,0">
+                                            <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#90CBF9">Opciones → Preferencias → VST → "Reescanear / encontrar nuevos plugins VST"</TextBlock>
+                                        </Border>
+                                    </StackPanel></Grid>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,16,0" VerticalAlignment="Top">
+                                        <TextBlock Text="5" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/></Border>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Usar el plugin en tus proyectos" FontWeight="Bold" Foreground="White" Margin="0,0,0,4"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">El plugin ya aparecerá en el menú FX de REAPER al agregar un track. Ve a la cadena de efectos de un track y búscalo por nombre.</TextBlock>
+                                    </StackPanel></Grid>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="#1B3A2A" Padding="14">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Lightbulb" Foreground="{StaticResource SuspiciousAmber}"
+                                                                 Width="20" Height="20" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap" VerticalAlignment="Center">
+                                            <Run FontWeight="Bold" Text="Consejo:" Foreground="White"/>
+                                            <Run Text=" Puedes configurar la ruta destino de instalación en la ventana Ajustes (icono ⚙️ arriba a la derecha)."/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </materialDesign:Card>
+                            </StackPanel>
+
+                            <!-- SECCIÓN 5: Seguridad -->
+                            <StackPanel x:Name="HelpSec5" Visibility="Collapsed">
+                                <TextBlock Text="Escaneo de seguridad"
+                                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                           Foreground="White" Margin="0,0,0,6"/>
+                                <TextBlock Text="Cómo funciona la protección contra plugins maliciosos"
+                                           Foreground="#78909C" FontSize="13" Margin="0,0,0,20"/>
+                                <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap" Margin="0,0,0,16">
+                                    Antes de instalar cualquier plugin, el programa realiza dos niveles de análisis automáticamente:
+                                </TextBlock>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="🔬" FontSize="28" Margin="0,0,16,0" VerticalAlignment="Center"/>
+                                        <StackPanel>
+                                            <TextBlock Text="Nivel 1 — Windows Defender (MpCmdRun.exe)" FontWeight="Bold" Foreground="White" Margin="0,0,0,4"/>
+                                            <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">El archivo se envía al motor de análisis de Windows Defender. Si contiene malware, el plugin se mueve automáticamente a la carpeta Quarantine.</TextBlock>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,16">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="🔏" FontSize="28" Margin="0,0,16,0" VerticalAlignment="Center"/>
+                                        <StackPanel>
+                                            <TextBlock Text="Nivel 2 — Firma digital (WinVerifyTrust)" FontWeight="Bold" Foreground="White" Margin="0,0,0,4"/>
+                                            <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">Se verifica si el .dll está firmado por un fabricante reconocido. Los plugins sin firma se marcan como "No verificado" pero pueden instalarse bajo tu responsabilidad.</TextBlock>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </materialDesign:Card>
+                                <TextBlock Text="COLORES DE ESTADO"
+                                           Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                           Foreground="#78909C" Margin="0,0,0,12"/>
+                                <StackPanel>
+                                    <materialDesign:Card Background="#1B3A2A" Padding="12" Margin="0,0,0,8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="CheckCircle" Foreground="{StaticResource SafeGreen}" Width="20" Height="20" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                            <StackPanel>
+                                                <TextBlock Text="SEGURO" FontWeight="Bold" Foreground="{StaticResource SafeGreen}" FontSize="12"/>
+                                                <TextBlock Text="Firmado digitalmente y sin amenazas detectadas." FontSize="12" Foreground="#B0BEC5"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+                                    <materialDesign:Card Background="#2A2200" Padding="12" Margin="0,0,0,8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="AlertCircle" Foreground="{StaticResource SuspiciousAmber}" Width="20" Height="20" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                            <StackPanel>
+                                                <TextBlock Text="ADVERTENCIA" FontWeight="Bold" Foreground="{StaticResource SuspiciousAmber}" FontSize="12"/>
+                                                <TextBlock Text="Sin firma digital pero sin malware. Instala bajo tu criterio." FontSize="12" Foreground="#B0BEC5"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+                                    <materialDesign:Card Background="#2A0A0A" Padding="12">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="ShieldOff" Foreground="{StaticResource BlockedRed}" Width="20" Height="20" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                            <StackPanel>
+                                                <TextBlock Text="PELIGRO" FontWeight="Bold" Foreground="{StaticResource BlockedRed}" FontSize="12"/>
+                                                <TextBlock Text="Malware detectado. Plugin enviado a cuarentena automáticamente." FontSize="12" Foreground="#B0BEC5"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- SECCIÓN 6: FAQ -->
+                            <StackPanel x:Name="HelpSec6" Visibility="Collapsed">
+                                <TextBlock Text="Preguntas frecuentes"
+                                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                           Foreground="White" Margin="0,0,0,6"/>
+                                <TextBlock Text="Problemas comunes y cómo resolverlos"
+                                           Foreground="#78909C" FontSize="13" Margin="0,0,0,20"/>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <StackPanel>
+                                        <TextBlock Text="⚠️ Aparece una advertencia de SmartScreen al abrir el .exe" FontWeight="Bold" Foreground="White" Margin="0,0,0,6"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">El programa no tiene certificado EV. Es seguro: haz clic en "Más información" → "Ejecutar de todas formas".</TextBlock>
+                                    </StackPanel>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <StackPanel>
+                                        <TextBlock Text="❌ Error: MaterialDesignThemes no encontrado al compilar" FontWeight="Bold" Foreground="White" Margin="0,0,0,6"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">Las dependencias no se restauraron. Ejecuta: </TextBlock>
+                                        <Border Background="#0A0A12" CornerRadius="4" Padding="10,8" Margin="0,6,0,0">
+                                            <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#90CBF9">dotnet restore ReaperPluginManager.csproj</TextBlock>
+                                        </Border>
+                                    </StackPanel>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <StackPanel>
+                                        <TextBlock Text="🎵 REAPER no detecta el plugin aunque esté instalado" FontWeight="Bold" Foreground="White" Margin="0,0,0,6"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">Ve a REAPER → Opciones → Preferencias → VST. Verifica que la ruta donde se instaló el plugin está en la lista. Si no, agrégala y haz clic en "Reescanear".</TextBlock>
+                                    </StackPanel>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <StackPanel>
+                                        <TextBlock Text="🔒 Access denied al instalar en Program Files" FontWeight="Bold" Foreground="White" Margin="0,0,0,6"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">Necesitas permisos de administrador. Haz clic derecho sobre ReaperPluginManager.exe → "Ejecutar como administrador".</TextBlock>
+                                    </StackPanel>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,8">
+                                    <StackPanel>
+                                        <TextBlock Text="💾 LiteDB: file locked al abrir el programa" FontWeight="Bold" Foreground="White" Margin="0,0,0,6"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">Hay otra instancia del Plugin Manager ya abierta. Ciérrala desde el Administrador de Tareas buscando "ReaperPluginManager".</TextBlock>
+                                    </StackPanel>
+                                </materialDesign:Card>
+                                <materialDesign:Card Background="{StaticResource CardDark}" Padding="16" Margin="0,0,0,0">
+                                    <StackPanel>
+                                        <TextBlock Text="🔌 Win32 error 126 al cargar un plugin en el sandbox" FontWeight="Bold" Foreground="White" Margin="0,0,0,6"/>
+                                        <TextBlock FontSize="13" Foreground="#B0BEC5" TextWrapping="Wrap">El plugin es de 32-bit (x86) en un sistema 64-bit. Busca la versión x64 del plugin en el sitio oficial del fabricante.</TextBlock>
+                                    </StackPanel>
+                                </materialDesign:Card>
+                            </StackPanel>
+
+                        </Grid>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+            <!-- FIN Panel Ayuda -->
         </Grid>
 
         <!-- ═══════════════════════════════════════════════ STATUS BAR ══ -->
