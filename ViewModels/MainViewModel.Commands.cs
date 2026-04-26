@@ -152,12 +152,13 @@ namespace ReaperPluginManager.ViewModels
 
         // ─── Asignar rating ───────────────────────────────────────────────────
         [RelayCommand]
-        public async Task SetRating((PluginViewModel Vm, int Rating) args)
+        public async Task SetRating(int rating)
         {
-            args.Vm.Plugin.UserRating = args.Rating;
-            _db.UpsertPlugin(args.Vm.Plugin);
-            args.Vm.Refresh();
-            Log($"⭐ {args.Vm.Plugin.Name} calificado con {args.Rating}/5");
+            if (SelectedPlugin == null) return;
+            SelectedPlugin.Plugin.UserRating = rating;
+            _db.UpsertPlugin(SelectedPlugin.Plugin);
+            SelectedPlugin.Refresh();
+            Log($"⭐ {SelectedPlugin.Plugin.Name} calificado con {rating}/5");
             await Task.CompletedTask;
         }
 
