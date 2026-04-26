@@ -1,0 +1,654 @@
+<Window x:Class="ReaperPluginManager.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:vm="clr-namespace:ReaperPluginManager.ViewModels"
+        xmlns:converters="clr-namespace:ReaperPluginManager.Converters"
+        mc:Ignorable="d"
+        Title="REAPER Plugin Manager"
+        Height="800" Width="1280"
+        MinHeight="600" MinWidth="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BackgroundDark}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontFamily="{DynamicResource MaterialDesignFont}"
+        Style="{StaticResource MaterialDesignWindow}">
+
+    <Window.Resources>
+        <converters:StatusToColorConverter    x:Key="StatusToColor"/>
+        <converters:SecurityToColorConverter  x:Key="SecurityToColor"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+        <converters:InverseBoolConverter      x:Key="InverseBool"/>
+        <converters:BytesToSizeConverter      x:Key="BytesToSize"/>
+        <converters:StatusToIconConverter     x:Key="StatusToIcon"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Header / Toolbar -->
+            <RowDefinition Height="*"/>     <!-- Contenido principal -->
+            <RowDefinition Height="Auto"/>  <!-- Status bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ═══════════════════════════════════════════════════ HEADER ══ -->
+        <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryMid" Padding="12,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo y título -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <materialDesign:PackIcon Kind="MusicBox" Width="32" Height="32"
+                                            Foreground="{DynamicResource SecondaryHueMidBrush}"
+                                            Margin="0,0,10,0"/>
+                    <StackPanel>
+                        <TextBlock Text="REAPER Plugin Manager"
+                                   Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                   Foreground="White"/>
+                        <TextBlock Text="Gestor Inteligente de Plugins VST"
+                                   Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                   Foreground="#B0BEC5"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Barra de búsqueda central -->
+                <Grid Grid.Column="1" Margin="24,0">
+                    <TextBox x:Name="SearchBox"
+                             Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="Buscar plugins, desarrolladores, categorías..."
+                             materialDesign:TextFieldAssist.HasClearButton="True"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             Foreground="White"
+                             CaretBrush="White"
+                             MaxWidth="600">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Return" Command="{Binding ApplyFiltersCommand}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </Grid>
+
+                <!-- Acciones del header -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Command="{Binding OpenAddPluginCommand}"
+                            Style="{StaticResource MaterialDesignRaisedButton}"
+                            Background="{DynamicResource SecondaryHueMidBrush}"
+                            Margin="0,0,8,0">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Plus" Margin="0,0,4,0"/>
+                            <TextBlock Text="Agregar Plugin"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding OpenSettingsCommand}"
+                            Style="{StaticResource MaterialDesignIconButton}"
+                            Foreground="White"
+                            ToolTip="Configuración">
+                        <materialDesign:PackIcon Kind="Settings"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </materialDesign:ColorZone>
+
+        <!-- ═══════════════════════════════════════════ CONTENIDO PRINCIPAL ══ -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220" MinWidth="180" MaxWidth="300"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="340" MinWidth="280" MaxWidth="420"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ─────────────────────────────── SIDEBAR IZQUIERDO ── -->
+            <Border Grid.Column="0" Background="{StaticResource SurfaceDark}"
+                    BorderThickness="0,0,1,0" BorderBrush="#2A2A3E">
+                <DockPanel>
+                    <!-- Stats rápidas -->
+                    <UniformGrid DockPanel.Dock="Top" Rows="2" Columns="2" Margin="8">
+                        <materialDesign:Card Margin="4" Background="{StaticResource CardDark}" Padding="8">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding TotalCount}" FontSize="22" FontWeight="Bold"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource SecondaryHueMidBrush}"/>
+                                <TextBlock Text="Total" Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </materialDesign:Card>
+                        <materialDesign:Card Margin="4" Background="{StaticResource CardDark}" Padding="8">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding InstalledCount}" FontSize="22" FontWeight="Bold"
+                                           HorizontalAlignment="Center" Foreground="{StaticResource SafeGreen}"/>
+                                <TextBlock Text="Instalados" Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </materialDesign:Card>
+                        <materialDesign:Card Margin="4" Background="{StaticResource CardDark}" Padding="8">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding BlockedCount}" FontSize="22" FontWeight="Bold"
+                                           HorizontalAlignment="Center" Foreground="{StaticResource BlockedRed}"/>
+                                <TextBlock Text="Bloqueados" Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </materialDesign:Card>
+                        <materialDesign:Card Margin="4" Background="{StaticResource CardDark}" Padding="8">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding FavoritesCount}" FontSize="22" FontWeight="Bold"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{StaticResource SuspiciousAmber}"/>
+                                <TextBlock Text="Favoritos" Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </materialDesign:Card>
+                    </UniformGrid>
+
+                    <Separator DockPanel.Dock="Top"/>
+
+                    <!-- Filtros rápidos -->
+                    <StackPanel DockPanel.Dock="Top" Margin="8,4">
+                        <TextBlock Text="VISTAS RÁPIDAS"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                   Margin="8,4" Foreground="#78909C"/>
+                        <RadioButton Content="  Todos los plugins"
+                                     IsChecked="True"
+                                     Command="{Binding SetQuickFilterCommand}"
+                                     CommandParameter="All"
+                                     Style="{StaticResource MaterialDesignRadioButton}"
+                                     Margin="4,2"/>
+                        <RadioButton Content="  Instalados"
+                                     Command="{Binding SetQuickFilterCommand}"
+                                     CommandParameter="Installed"
+                                     Style="{StaticResource MaterialDesignRadioButton}"
+                                     Margin="4,2"/>
+                        <RadioButton Content="  Favoritos ⭐"
+                                     Command="{Binding SetQuickFilterCommand}"
+                                     CommandParameter="Favorites"
+                                     Style="{StaticResource MaterialDesignRadioButton}"
+                                     Margin="4,2"/>
+                        <RadioButton Content="  Pendientes"
+                                     Command="{Binding SetQuickFilterCommand}"
+                                     CommandParameter="Pending"
+                                     Style="{StaticResource MaterialDesignRadioButton}"
+                                     Margin="4,2"/>
+                        <RadioButton Content="  Bloqueados 🚫"
+                                     Command="{Binding SetQuickFilterCommand}"
+                                     CommandParameter="Blocked"
+                                     Style="{StaticResource MaterialDesignRadioButton}"
+                                     Margin="4,2"/>
+                    </StackPanel>
+
+                    <Separator DockPanel.Dock="Top"/>
+
+                    <!-- Categorías -->
+                    <DockPanel DockPanel.Dock="Top" Margin="8,4">
+                        <TextBlock Text="CATEGORÍAS"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                   Margin="8,4" Foreground="#78909C" DockPanel.Dock="Top"/>
+                        <Button DockPanel.Dock="Top"
+                                Command="{Binding CreateCategoryCommand}"
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                HorizontalAlignment="Left"
+                                Padding="4">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="FolderPlus" Width="14" Height="14" Margin="0,0,4,0"/>
+                                <TextBlock Text="Nueva categoría" FontSize="11"/>
+                            </StackPanel>
+                        </Button>
+                    </DockPanel>
+
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding Categories}" Margin="4">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding DataContext.FilterByCategoryCommand,
+                                                RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding Name}"
+                                            Style="{StaticResource MaterialDesignFlatButton}"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Left"
+                                            Padding="8,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Ellipse Width="10" Height="10" Margin="0,0,8,0">
+                                                <Ellipse.Fill>
+                                                    <SolidColorBrush Color="{Binding Color}"/>
+                                                </Ellipse.Fill>
+                                            </Ellipse>
+                                            <TextBlock Text="{Binding Name}" FontSize="12"/>
+                                            <TextBlock Text="{Binding PluginCount, StringFormat=' ({0})'}"
+                                                       FontSize="11" Foreground="#78909C"/>
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+
+            <!-- ─────────────────────────── LISTA CENTRAL DE PLUGINS ── -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Toolbar de filtros -->
+                <Border Grid.Row="0" Background="{StaticResource SurfaceDark}"
+                        BorderThickness="0,0,0,1" BorderBrush="#2A2A3E" Padding="12,8">
+                    <WrapPanel Orientation="Horizontal">
+                        <ComboBox materialDesign:HintAssist.Hint="Formato"
+                                  SelectedItem="{Binding FilterFormat}"
+                                  Width="110" Margin="0,0,8,0"
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                            <ComboBox.Items>
+                                <x:Null/>
+                                <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">VST2</sys:String>
+                                <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">VST3</sys:String>
+                                <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">JSFX</sys:String>
+                            </ComboBox.Items>
+                        </ComboBox>
+                        <ToggleButton IsChecked="{Binding ShowOnlyFavorites}"
+                                      Command="{Binding ApplyFiltersCommand}"
+                                      Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                                      Margin="0,0,8,0"/>
+                        <TextBlock Text="Solo favoritos" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                        <Button Command="{Binding ApplyFiltersCommand}"
+                                Style="{StaticResource MaterialDesignFlatButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Filter" Margin="0,0,4,0"/>
+                                <TextBlock Text="Aplicar"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding ClearFiltersCommand}"
+                                Style="{StaticResource MaterialDesignFlatButton}">
+                            <materialDesign:PackIcon Kind="FilterRemove"/>
+                        </Button>
+                    </WrapPanel>
+                </Border>
+
+                <!-- Lista de plugins -->
+                <ListView Grid.Row="1"
+                          ItemsSource="{Binding Plugins}"
+                          SelectedItem="{Binding SelectedPlugin}"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          Background="Transparent"
+                          BorderThickness="0"
+                          VirtualizingPanel.IsVirtualizing="True"
+                          VirtualizingPanel.VirtualizationMode="Recycling">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MaterialDesignListBoxItem}">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="8,4"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:PluginViewModel}">
+                            <materialDesign:Card Background="{StaticResource CardDark}"
+                                                 materialDesign:ElevationAssist.Elevation="Dp2"
+                                                 Padding="0">
+                                <Grid Margin="12,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Icono de estado -->
+                                    <Border Grid.Column="0" Width="48" Height="48"
+                                            CornerRadius="24" Margin="0,0,12,0"
+                                            Background="{Binding Status, Converter={StaticResource StatusToColor}}">
+                                        <TextBlock Text="{Binding StatusIcon}"
+                                                   FontSize="20"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <!-- Info principal -->
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Plugin.Name}"
+                                                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                       Foreground="White" FontWeight="SemiBold"/>
+                                            <Border Background="#2A2A4A" CornerRadius="3"
+                                                    Padding="4,1" Margin="8,0,0,0"
+                                                    VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Plugin.Format}"
+                                                           FontSize="10" Foreground="#78909C"/>
+                                            </Border>
+                                            <!-- Indicador de favorito -->
+                                            <materialDesign:PackIcon Kind="Star"
+                                                                     Foreground="{StaticResource SuspiciousAmber}"
+                                                                     Width="16" Height="16"
+                                                                     Margin="6,0,0,0"
+                                                                     Visibility="{Binding IsFavorite, Converter={StaticResource BoolToVisibility}}"/>
+                                        </StackPanel>
+                                        <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="#90A4AE">
+                                            <Run Text="{Binding Plugin.Developer}"/>
+                                            <Run Text=" • v"/>
+                                            <Run Text="{Binding Plugin.Version}"/>
+                                            <Run Text=" • "/>
+                                            <Run Text="{Binding Plugin.Category}"/>
+                                        </TextBlock>
+                                        <!-- Barra de progreso inline -->
+                                        <ProgressBar Height="3" Margin="0,4,0,0"
+                                                     IsIndeterminate="True"
+                                                     Foreground="{DynamicResource SecondaryHueMidBrush}"
+                                                     Visibility="{Binding Plugin.Status,
+                                                         Converter={StaticResource StatusToIcon}}"/>
+                                    </StackPanel>
+
+                                    <!-- Acciones rápidas -->
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal"
+                                                VerticalAlignment="Center">
+                                        <!-- Badge de seguridad -->
+                                        <Border CornerRadius="12" Padding="6,3" Margin="4,0"
+                                                Background="{Binding SecurityStatus,
+                                                    Converter={StaticResource SecurityToColor}}">
+                                            <TextBlock Text="{Binding SecurityIcon}"
+                                                       FontSize="11"/>
+                                        </Border>
+
+                                        <!-- Botón instalar/acción principal -->
+                                        <Button Command="{Binding DataContext.RunFullPipelineCommand,
+                                                    RelativeSource={RelativeSource AncestorType=Window}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource MaterialDesignRaisedButton}"
+                                                Background="{DynamicResource PrimaryHueMidBrush}"
+                                                Padding="8,4" Margin="4,0"
+                                                Height="32">
+                                            <TextBlock Text="Instalar" FontSize="12"/>
+                                        </Button>
+
+                                        <!-- Menú contextual -->
+                                        <Button Style="{StaticResource MaterialDesignIconButton}"
+                                                Height="32" Width="32">
+                                            <materialDesign:PackIcon Kind="DotsVertical" Width="16" Height="16"/>
+                                            <Button.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="⭐ Toggle Favorito"
+                                                              Command="{Binding DataContext.ToggleFavoriteCommand,
+                                                                  Source={x:Reference SearchBox}}"
+                                                              CommandParameter="{Binding}"/>
+                                                    <MenuItem Header="📁 Cambiar categoría"
+                                                              Command="{Binding DataContext.OpenCategoryMenuCommand,
+                                                                  Source={x:Reference SearchBox}}"
+                                                              CommandParameter="{Binding}"/>
+                                                    <Separator/>
+                                                    <MenuItem Header="🗑️ Desinstalar"
+                                                              Command="{Binding DataContext.UninstallPluginCommand,
+                                                                  Source={x:Reference SearchBox}}"
+                                                              CommandParameter="{Binding}"/>
+                                                    <MenuItem Header="❌ Eliminar de lista"
+                                                              Command="{Binding DataContext.RemovePluginCommand,
+                                                                  Source={x:Reference SearchBox}}"
+                                                              CommandParameter="{Binding}"/>
+                                                </ContextMenu>
+                                            </Button.ContextMenu>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </materialDesign:Card>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <!-- Overlay de carga -->
+                <Grid Grid.Row="0" Grid.RowSpan="2"
+                      Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}"
+                      Background="#88000000">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                     Width="48" Height="48" IsIndeterminate="True"/>
+                        <TextBlock Text="Cargando..." Margin="0,12,0,0"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <!-- ─────────────────────────── PANEL DERECHO: DETALLE ── -->
+            <Border Grid.Column="2" Background="{StaticResource SurfaceDark}"
+                    BorderThickness="1,0,0,0" BorderBrush="#2A2A3E">
+                <Grid>
+                    <!-- Placeholder si no hay selección -->
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Visibility="{Binding SelectedPlugin, Converter={StaticResource BoolToVisibility},
+                                    ConverterParameter=Inverse}">
+                        <materialDesign:PackIcon Kind="MusicBoxOutline" Width="64" Height="64"
+                                                 HorizontalAlignment="Center"
+                                                 Foreground="#37474F"/>
+                        <TextBlock Text="Selecciona un plugin" Margin="0,12,0,0"
+                                   HorizontalAlignment="Center" Foreground="#546E7A"/>
+                        <TextBlock Text="para ver sus detalles" HorizontalAlignment="Center"
+                                   Foreground="#546E7A"/>
+                    </StackPanel>
+
+                    <!-- Detalle del plugin seleccionado -->
+                    <ScrollViewer Visibility="{Binding SelectedPlugin, Converter={StaticResource BoolToVisibility}}"
+                                  VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="16" DataContext="{Binding SelectedPlugin}">
+
+                            <!-- Encabezado del plugin -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                <Border Width="56" Height="56" CornerRadius="28"
+                                        Background="{Binding Status, Converter={StaticResource StatusToColor}}"
+                                        Margin="0,0,12,0">
+                                    <TextBlock Text="{Binding StatusIcon}" FontSize="26"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Plugin.Name}"
+                                               Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                               Foreground="White" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding Plugin.Developer}"
+                                               Foreground="#90A4AE"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Rating con estrellas -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                <TextBlock Text="Tu rating: " VerticalAlignment="Center"/>
+                                <ItemsControl ItemsSource="{x:Static vm:PluginViewModel.StarRange}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Style="{StaticResource MaterialDesignIconButton}"
+                                                    Width="24" Height="24" Padding="2"
+                                                    Command="{Binding DataContext.SetRatingCommand,
+                                                        RelativeSource={RelativeSource AncestorType=Window}}"
+                                                    CommandParameter="{Binding}">
+                                                <materialDesign:PackIcon Kind="Star" Width="18" Height="18"
+                                                                         Foreground="{StaticResource SuspiciousAmber}"/>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <!-- Chips de info -->
+                            <WrapPanel Margin="0,0,0,16">
+                                <Border Background="#1A3A1A" CornerRadius="12" Padding="8,4" Margin="0,0,6,6">
+                                    <TextBlock FontSize="12">
+                                        <Run Text="Formato: " Foreground="#78909C"/>
+                                        <Run Text="{Binding Plugin.Format}" Foreground="{StaticResource SafeGreen}"/>
+                                    </TextBlock>
+                                </Border>
+                                <Border Background="#1A1A3A" CornerRadius="12" Padding="8,4" Margin="0,0,6,6">
+                                    <TextBlock FontSize="12">
+                                        <Run Text="Versión: " Foreground="#78909C"/>
+                                        <Run Text="{Binding Plugin.Version}" Foreground="#90CAF9"/>
+                                    </TextBlock>
+                                </Border>
+                                <Border Background="#2A1A1A" CornerRadius="12" Padding="8,4" Margin="0,0,6,6">
+                                    <TextBlock FontSize="12">
+                                        <Run Text="Arch: " Foreground="#78909C"/>
+                                        <Run Text="{Binding Plugin.Architecture}" Foreground="#FFCC80"/>
+                                    </TextBlock>
+                                </Border>
+                            </WrapPanel>
+
+                            <!-- Descripción -->
+                            <TextBlock Text="DESCRIPCIÓN"
+                                       Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                       Foreground="#78909C" Margin="0,0,0,4"/>
+                            <TextBlock Text="{Binding Plugin.Description}"
+                                       TextWrapping="Wrap" FontSize="13"
+                                       Foreground="#B0BEC5" Margin="0,0,0,16"
+                                       MaxHeight="80"/>
+
+                            <Separator Margin="0,0,0,16"/>
+
+                            <!-- Panel de seguridad -->
+                            <TextBlock Text="SEGURIDAD"
+                                       Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                       Foreground="#78909C" Margin="0,0,0,8"/>
+                            <materialDesign:Card Background="{StaticResource CardDark}"
+                                                 Padding="12" Margin="0,0,0,16">
+                                <StackPanel DataContext="{Binding Plugin.LastSecurityResult}">
+                                    <Grid Margin="0,0,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Hash SHA-256"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding HashCheckPassed, Converter={StaticResource BoolToVisibility}}"
+                                                   Foreground="{StaticResource SafeGreen}"/>
+                                    </Grid>
+                                    <Grid Margin="0,0,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Firma Digital"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding SignatureSubject}"
+                                                   FontSize="11" Foreground="#90A4AE"
+                                                   TextTrimming="CharacterEllipsis" MaxWidth="120"/>
+                                    </Grid>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Windows Defender"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding DefenderThreatFound, Converter={StaticResource InverseBool}}"
+                                                   Foreground="{StaticResource SafeGreen}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </materialDesign:Card>
+
+                            <!-- Resultado sandbox -->
+                            <TextBlock Text="SANDBOX"
+                                       Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                       Foreground="#78909C" Margin="0,0,0,8"/>
+                            <materialDesign:Card Background="{StaticResource CardDark}"
+                                                 Padding="12" Margin="0,0,0,16">
+                                <StackPanel DataContext="{Binding Plugin.LastSandboxResult}">
+                                    <TextBlock Text="{Binding GetVerdictDisplay}"
+                                               FontWeight="Bold" Margin="0,0,0,6"/>
+                                    <Grid Margin="0,0,0,4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="CPU Pico"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding PeakCpuUsagePercent, StringFormat='{}{0:F1}%'}"/>
+                                    </Grid>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="RAM Pico"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding PeakMemoryUsageMB, StringFormat='{}{0} MB'}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </materialDesign:Card>
+
+                            <!-- Ruta de instalación -->
+                            <TextBlock Text="INSTALACIÓN"
+                                       Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                       Foreground="#78909C" Margin="0,0,0,8"/>
+                            <TextBox Text="{Binding Plugin.InstallPath, Mode=OneWay}"
+                                     IsReadOnly="True"
+                                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                     FontSize="11"
+                                     Foreground="#90A4AE"
+                                     Margin="0,0,0,8"/>
+
+                            <!-- Historial de actividad del panel -->
+                            <TextBlock Text="LOG DE ACTIVIDAD"
+                                       Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                       Foreground="#78909C" Margin="0,8,0,8"/>
+                            <Border Background="#0D0D1A" CornerRadius="4" MaxHeight="150"
+                                    DataContext="{Binding DataContext,
+                                        RelativeSource={RelativeSource AncestorType=Window}}">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl ItemsSource="{Binding ActivityLog}" Margin="8">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}"
+                                                           FontSize="11" FontFamily="Consolas"
+                                                           Foreground="#78909C"
+                                                           TextWrapping="Wrap"
+                                                           Margin="0,1"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ═══════════════════════════════════════════════ STATUS BAR ══ -->
+        <Border Grid.Row="2" Background="#0D0D1A"
+                BorderThickness="0,1,0,0" BorderBrush="#2A2A3E" Padding="12,6">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Mensaje de estado -->
+                <TextBlock Grid.Column="0" Text="{Binding StatusMessage}"
+                           VerticalAlignment="Center" FontSize="12"
+                           Foreground="#78909C" TextTrimming="CharacterEllipsis"/>
+
+                <!-- Barra de progreso general -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal"
+                            Margin="0,0,12,0" VerticalAlignment="Center"
+                            Visibility="{Binding IsOperationRunning,
+                                Converter={StaticResource BoolToVisibility}}">
+                    <ProgressBar Width="200" Height="4"
+                                 Value="{Binding OverallProgress}"
+                                 Foreground="{DynamicResource SecondaryHueMidBrush}"
+                                 Margin="0,0,8,0"/>
+                    <TextBlock Text="{Binding OverallProgress, StringFormat='{}{0:F0}%'}"
+                               FontSize="11" Foreground="#78909C" VerticalAlignment="Center"/>
+                    <Button Command="{Binding CancelOperationCommand}"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Padding="4,2" Margin="8,0,0,0" Height="20">
+                        <TextBlock Text="Cancelar" FontSize="10"/>
+                    </Button>
+                </StackPanel>
+
+                <!-- Versión -->
+                <TextBlock Grid.Column="2" Text="v1.0.0"
+                           VerticalAlignment="Center" FontSize="11"
+                           Foreground="#37474F"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
