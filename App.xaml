@@ -6,20 +6,20 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <materialDesign:BundledTheme BaseTheme="Dark"
-                                             PrimaryColor="DeepPurple"
-                                             SecondaryColor="Cyan" />
+                                             PrimaryColor="BlueGrey"
+                                             SecondaryColor="Blue" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Colores personalizados -->
             <SolidColorBrush x:Key="SafeGreen"       Color="#4CAF50"/>
             <SolidColorBrush x:Key="SuspiciousAmber" Color="#FF9800"/>
-            <SolidColorBrush x:Key="BlockedRed"      Color="#F44336"/>
+            <SolidColorBrush x:Key="BlockedRed"      Color="#E53935"/>
             <SolidColorBrush x:Key="NeutralGray"     Color="#9E9E9E"/>
-            <SolidColorBrush x:Key="PrimaryPurple"   Color="#6750A4"/>
-            <SolidColorBrush x:Key="BackgroundDark"  Color="#121212"/>
-            <SolidColorBrush x:Key="SurfaceDark"     Color="#1E1E2E"/>
-            <SolidColorBrush x:Key="CardDark"        Color="#2A2A3E"/>
+            <SolidColorBrush x:Key="PrimaryPurple"   Color="#455A64"/>
+            <SolidColorBrush x:Key="BackgroundDark"  Color="#1A1A1A"/>
+            <SolidColorBrush x:Key="SurfaceDark"     Color="#242424"/>
+            <SolidColorBrush x:Key="CardDark"        Color="#2E2E2E"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

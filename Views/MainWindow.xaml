@@ -11,6 +11,9 @@
         Height="800" Width="1280"
         MinHeight="600" MinWidth="1000"
         WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResize"
         Background="{StaticResource BackgroundDark}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontFamily="{DynamicResource MaterialDesignFont}"
@@ -27,13 +30,86 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="36"/>    <!-- Barra de título -->
             <RowDefinition Height="Auto"/>  <!-- Header / Toolbar -->
             <RowDefinition Height="*"/>     <!-- Contenido principal -->
             <RowDefinition Height="Auto"/>  <!-- Status bar -->
         </Grid.RowDefinitions>
 
-        <!-- ═══════════════════════════════════════════════════ HEADER ══ -->
-        <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryMid" Padding="12,8">
+        <!-- ══════════════════════════════════════════ BARRA DE TÍTULO ══ -->
+        <Border Grid.Row="0" Background="#111111"
+                MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Icono y nombre de la app -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal"
+                            VerticalAlignment="Center" Margin="12,0,0,0">
+                    <materialDesign:PackIcon Kind="MusicBox" Width="16" Height="16"
+                                            Foreground="#78909C" Margin="0,0,8,0"/>
+                    <TextBlock Text="REAPER Plugin Manager"
+                               FontSize="12" Foreground="#90A4AE"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Botones de control de ventana -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <!-- Minimizar -->
+                    <Button x:Name="BtnMinimize"
+                            Click="BtnMinimize_Click"
+                            Width="46" Height="36"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="#90A4AE"
+                            Padding="0"
+                            ToolTip="Minimizar">
+                        <materialDesign:PackIcon Kind="WindowMinimize" Width="14" Height="14"/>
+                    </Button>
+                    <!-- Maximizar/Restaurar -->
+                    <Button x:Name="BtnMaximize"
+                            Click="BtnMaximize_Click"
+                            Width="46" Height="36"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="#90A4AE"
+                            Padding="0"
+                            ToolTip="Maximizar">
+                        <materialDesign:PackIcon Kind="WindowMaximize" Width="14" Height="14"/>
+                    </Button>
+                    <!-- Cerrar -->
+                    <Button x:Name="BtnClose"
+                            Click="BtnClose_Click"
+                            Width="46" Height="36"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Foreground="#90A4AE"
+                            Padding="0"
+                            ToolTip="Cerrar">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#C42B1C"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <materialDesign:PackIcon Kind="WindowClose" Width="14" Height="14"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════════ HEADER ══ -->
+        <Border Grid.Row="1" Background="#1C1C1C"
+                BorderThickness="0,0,0,1" BorderBrush="#333333" Padding="12,8">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -43,16 +119,10 @@
 
                 <!-- Logo y título -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <materialDesign:PackIcon Kind="MusicBox" Width="32" Height="32"
-                                            Foreground="{DynamicResource SecondaryHueMidBrush}"
-                                            Margin="0,0,10,0"/>
                     <StackPanel>
-                        <TextBlock Text="REAPER Plugin Manager"
-                                   Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                                   Foreground="White"/>
-                        <TextBlock Text="Gestor Inteligente de Plugins VST"
+                        <TextBlock Text="Gestor de Plugins VST"
                                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                                   Foreground="#B0BEC5"/>
+                                   Foreground="#78909C"/>
                     </StackPanel>
                 </StackPanel>
 
@@ -60,7 +130,7 @@
                 <Grid Grid.Column="1" Margin="24,0">
                     <TextBox x:Name="SearchBox"
                              Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
-                             materialDesign:HintAssist.Hint="Buscar plugins, desarrolladores, categorías..."
+                             materialDesign:HintAssist.Hint="Buscar por nombre, desarrollador o categoría..."
                              materialDesign:TextFieldAssist.HasClearButton="True"
                              Style="{StaticResource MaterialDesignOutlinedTextBox}"
                              Foreground="White"
@@ -76,7 +146,6 @@
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Command="{Binding OpenAddPluginCommand}"
                             Style="{StaticResource MaterialDesignRaisedButton}"
-                            Background="{DynamicResource SecondaryHueMidBrush}"
                             Margin="0,0,8,0">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Plus" Margin="0,0,4,0"/>
@@ -85,16 +154,16 @@
                     </Button>
                     <Button Command="{Binding OpenSettingsCommand}"
                             Style="{StaticResource MaterialDesignIconButton}"
-                            Foreground="White"
+                            Foreground="#90A4AE"
                             ToolTip="Configuración">
                         <materialDesign:PackIcon Kind="Settings"/>
                     </Button>
                 </StackPanel>
             </Grid>
-        </materialDesign:ColorZone>
+        </Border>
 
         <!-- ═══════════════════════════════════════════ CONTENIDO PRINCIPAL ══ -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="220" MinWidth="180" MaxWidth="300"/>
                 <ColumnDefinition Width="*"/>
@@ -105,13 +174,13 @@
             <Border Grid.Column="0" Background="{StaticResource SurfaceDark}"
                     BorderThickness="0,0,1,0" BorderBrush="#2A2A3E">
                 <DockPanel>
-                    <!-- Stats rápidas -->
+                        <!-- Stats rápidas -->
                     <UniformGrid DockPanel.Dock="Top" Rows="2" Columns="2" Margin="8">
                         <materialDesign:Card Margin="4" Background="{StaticResource CardDark}" Padding="8">
                             <StackPanel HorizontalAlignment="Center">
                                 <TextBlock Text="{Binding TotalCount}" FontSize="22" FontWeight="Bold"
                                            HorizontalAlignment="Center"
-                                           Foreground="{DynamicResource SecondaryHueMidBrush}"/>
+                                           Foreground="White"/>
                                 <TextBlock Text="Total" Style="{StaticResource MaterialDesignCaptionTextBlock}"
                                            HorizontalAlignment="Center"/>
                             </StackPanel>
@@ -136,7 +205,7 @@
                             <StackPanel HorizontalAlignment="Center">
                                 <TextBlock Text="{Binding FavoritesCount}" FontSize="22" FontWeight="Bold"
                                            HorizontalAlignment="Center"
-                                           Foreground="{StaticResource SuspiciousAmber}"/>
+                                           Foreground="#90A4AE"/>
                                 <TextBlock Text="Favoritos" Style="{StaticResource MaterialDesignCaptionTextBlock}"
                                            HorizontalAlignment="Center"/>
                             </StackPanel>
@@ -311,11 +380,11 @@
                                             <TextBlock Text="{Binding Plugin.Name}"
                                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                                                        Foreground="White" FontWeight="SemiBold"/>
-                                            <Border Background="#2A2A4A" CornerRadius="3"
+                                            <Border Background="#383838" CornerRadius="3"
                                                     Padding="4,1" Margin="8,0,0,0"
                                                     VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding Plugin.Format}"
-                                                           FontSize="10" Foreground="#78909C"/>
+                                                           FontSize="10" Foreground="#90A4AE"/>
                                             </Border>
                                             <!-- Indicador de favorito -->
                                             <materialDesign:PackIcon Kind="Star"
@@ -472,22 +541,22 @@
 
                             <!-- Chips de info -->
                             <WrapPanel Margin="0,0,0,16">
-                                <Border Background="#1A3A1A" CornerRadius="12" Padding="8,4" Margin="0,0,6,6">
+                                <Border Background="#2E2E2E" CornerRadius="4" Padding="8,4" Margin="0,0,6,6">
                                     <TextBlock FontSize="12">
                                         <Run Text="Formato: " Foreground="#78909C"/>
                                         <Run Text="{Binding Plugin.Format}" Foreground="{StaticResource SafeGreen}"/>
                                     </TextBlock>
                                 </Border>
-                                <Border Background="#1A1A3A" CornerRadius="12" Padding="8,4" Margin="0,0,6,6">
+                                <Border Background="#2E2E2E" CornerRadius="4" Padding="8,4" Margin="0,0,6,6">
                                     <TextBlock FontSize="12">
                                         <Run Text="Versión: " Foreground="#78909C"/>
-                                        <Run Text="{Binding Plugin.Version}" Foreground="#90CAF9"/>
+                                        <Run Text="{Binding Plugin.Version}" Foreground="White"/>
                                     </TextBlock>
                                 </Border>
-                                <Border Background="#2A1A1A" CornerRadius="12" Padding="8,4" Margin="0,0,6,6">
+                                <Border Background="#2E2E2E" CornerRadius="4" Padding="8,4" Margin="0,0,6,6">
                                     <TextBlock FontSize="12">
                                         <Run Text="Arch: " Foreground="#78909C"/>
-                                        <Run Text="{Binding Plugin.Architecture}" Foreground="#FFCC80"/>
+                                        <Run Text="{Binding Plugin.Architecture}" Foreground="White"/>
                                     </TextBlock>
                                 </Border>
                             </WrapPanel>
@@ -612,7 +681,7 @@
         </Grid>
 
         <!-- ═══════════════════════════════════════════════ STATUS BAR ══ -->
-        <Border Grid.Row="2" Background="#0D0D1A"
+        <Border Grid.Row="3" Background="#111111"
                 BorderThickness="0,1,0,0" BorderBrush="#2A2A3E" Padding="12,6">
             <Grid>
                 <Grid.ColumnDefinitions>
